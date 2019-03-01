@@ -1,0 +1,47 @@
+apply plugin: 'groovy'
+apply plugin: 'maven'
+
+group = 'com.mtime.android.base'
+version = rootProject.ext.wxPluginVer
+
+dependencies {
+    compile fileTree(dir: 'libs', include: ['*.jar'])
+    //gradle sdk
+    compile gradleApi()
+    //groovy sdk
+    compile localGroovy()
+
+    compile 'commons-io:commons-io:2.5'
+    compile 'org.ow2.asm:asm:6.0'
+    compileOnly 'com.android.tools.build:gradle:2.0.0'
+}
+
+
+uploadArchives {
+    repositories {
+        mavenDeployer {
+            repository(url: "http://192.168.50.240:8082/nexus/content/repositories/releases/") {
+                authentication(userName: "admin", password: "admin123")
+            }
+
+            snapshotRepository(url: uri('http://192.168.50.240:8082/nexus/content/repositories/thirdparty/')) {
+                authentication(userName: 'admin', password: 'admin123')
+            }
+        }
+    }
+
+//    repositories {
+//        mavenDeployer {
+//            repository(url: uri("../repo"))
+//        }
+//    }
+}
+
+task sourcesJar(type: Jar) {
+    from sourceSets.main.allSource
+    classifier = 'sources'
+}
+
+artifacts {
+    archives sourcesJar
+}
